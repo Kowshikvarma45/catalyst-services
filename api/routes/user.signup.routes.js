@@ -1,9 +1,12 @@
 import express from "express";
 const router = express.Router();
 
-import { signupUsingNameEmailPhonePassword, sigupusingEmailPassword, sigupusingNamePassword } from "../controllers/user.register.controller.js";
+import { loginusingEmailPassword, loginusingNamePassword, signupUsingNameEmailPhonePassword, signupusingEmailPassword, signupusingNamePassword } from "../controllers/user.register.controller.js";
 
 router.post("/signupUsingNameEmailPhonePassword", signupUsingNameEmailPhonePassword);
-router.post("/signupUsingEmailPassword",sigupusingEmailPassword)
-router.post("/signupUsingNamePassword",sigupusingNamePassword)
+router.post("/signupUsingEmailPassword",signupusingEmailPassword)
+router.post("/signupUsingNamePassword",signupusingNamePassword)
+router.post("/loginusingEmailPassword",loginusingEmailPassword)
+router.post("/loginusingNamePassword",loginusingNamePassword)
+
 export default router;

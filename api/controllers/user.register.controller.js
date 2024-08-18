@@ -1,7 +1,5 @@
 import { userModelNameEmailPhonePassword,userModelEmailPassword, userModeNamePassword } from "../models/user.register.models.js";
 import connectDB from "../config/db.js";
-import jwt from "jsonwebtoken"
-import { JWT_SECRET } from "../config.js";
 
 const signupUsingNameEmailPhonePassword = async (req, res) => {
   const BACKEND_URL = req.body.connection_url;
@@ -12,10 +10,8 @@ const signupUsingNameEmailPhonePassword = async (req, res) => {
     const user = new User({ name, email, phone, password });
     await user.save();
     console.log("user succesfully saved")
-    const tokenFornameEmailPhonePassword = jwt.sign({userid:user._id},JWT_SECRET)
     res.status(200).json({
       msg:"siginup successfull",
-      token:tokenFornameEmailPhonePassword
     });
     console.log("signup sucess")
   } catch (err) {
@@ -24,7 +20,7 @@ const signupUsingNameEmailPhonePassword = async (req, res) => {
   }
 };
 
-const sigupusingEmailPassword = async(req,res)=>{
+const signupusingEmailPassword = async(req,res)=>{
   const BACKEND_URL = req.body.connection_url;
   connectDB(BACKEND_URL);
   const User = userModelEmailPassword;
@@ -33,10 +29,8 @@ const sigupusingEmailPassword = async(req,res)=>{
     const user = new User({email,password});
     await user.save();
     console.log("user succesfully saved")
-    const tokenFORemailPassword = jwt.sign({userid:user._id},JWT_SECRET)
     res.status(200).json({
       msg:"siginup successfull",
-      token:tokenFORemailPassword
     });
     console.log("sigup success using email and password");
   }catch(err) {
@@ -46,7 +40,7 @@ const sigupusingEmailPassword = async(req,res)=>{
 
 };
 
-const sigupusingNamePassword = async(req,res)=>{
+const signupusingNamePassword = async(req,res)=>{
   const BACKEND_URL = req.body.connection_url;
   connectDB(BACKEND_URL);
   const User = userModeNamePassword;
@@ -55,10 +49,8 @@ const sigupusingNamePassword = async(req,res)=>{
     const user = new User({username,password});
     await user.save();
     console.log("user succesfully saved")
-    const tokenFORnamePassword = jwt.sign({userid:user._id},JWT_SECRET)
     res.status(200).json({
       msg:"siginup successfull",
-      token:tokenFORnamePassword
     });
     console.log("signup success using name and password");
   }catch(err) {
@@ -68,4 +60,63 @@ const sigupusingNamePassword = async(req,res)=>{
 
 };
 
-export { signupUsingNameEmailPhonePassword,sigupusingEmailPassword,sigupusingNamePassword };
+const loginusingEmailPassword = async(req,res)=>{
+  try {
+    const BACKEND_URL = req.body.connection_url;
+    connectDB(BACKEND_URL);
+  }catch(err) {
+    res.json({
+      msg:"error while connecting your db,connection string invalid"
+    })
+  }
+  const {email,password} = req.body.data;
+  try {
+    const response = await userModelNameEmailPhonePassword.findOne({email:email,password:password})
+    if(response) {
+    res.status(200).json({
+      msg:"siginin successfull",
+    });
+    console.log("signin success using Email and password");
+    }
+    else {
+      res.status(403).json({
+        msg:"User Not Found"
+      })
+    }
+  }catch(err) {
+    console.error("error occured while siginingin using email and password",err);
+    res.status(500).send("error ocurred while siginingin due to network crisis")
+  }
+
+}
+
+const loginusingNamePassword = async(req,res)=>{
+  try {
+    const BACKEND_URL = req.body.connection_url;
+    connectDB(BACKEND_URL);
+  }catch(err) {
+    res.json({
+      msg:"error while connecting your db,connection string invalid"
+    })
+  }
+  const {name,password} = req.body.data;
+  try {
+    const response = await userModelNameEmailPhonePassword.findOne({name:name,password:password})
+    if(response) {
+    res.status(200).json({
+      msg:"siginin successfull",
+    });
+    console.log("signin success using Name and password");
+    }
+    else {
+      res.status(403).json({
+        msg:"User Not Found"
+      })
+    }
+  }catch(err) {
+    console.error("error occured while siginingin using name and password",err);
+    res.status(500).send("error ocurred while siginingin due to network crisis")
+  }
+
+}
+export { signupUsingNameEmailPhonePassword,signupusingEmailPassword,signupusingNamePassword,loginusingEmailPassword,loginusingNamePassword};
